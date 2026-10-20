@@ -328,7 +328,35 @@ const saveSettings = (updatedSettings) => {
 
         <main className="main">
           <header className="topbar">
-            <div className="breadcrumb">Workspace&nbsp; / &nbsp;<strong>Dashboard</strong></div>
+            <div className="breadcrumb" aria-label="Breadcrumb">
+              <button
+                type="button"
+                className="breadcrumb-link"
+                style={{ border: 0, padding: 0, background: "transparent", color: "inherit", font: "inherit", cursor: "pointer" }}
+                onClick={() => {
+                  setActivePage("Dashboard");
+                  setStatusFilter("All stages");
+                  setPositionFilter("All positions");
+                }}
+                aria-label="Go to Dashboard"
+              >
+                Workspace
+              </button>
+              &nbsp; / &nbsp;
+              <button
+                type="button"
+                className="breadcrumb-current"
+                style={{ border: 0, padding: 0, background: "transparent", color: "inherit", font: "inherit", fontWeight: 700, cursor: "pointer" }}
+                onClick={() => {
+                  setActivePage("Dashboard");
+                  setStatusFilter("All stages");
+                  setPositionFilter("All positions");
+                }}
+                aria-label="Go to Dashboard"
+              >
+                {activePage === "Hiring pipeline" ? "Hiring Pipeline" : activePage}
+              </button>
+            </div>
             <div className="profile">
               
 {/* Notification button */}
