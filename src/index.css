@@ -265,3 +265,156 @@ td { color: #59647a; font-size: 12px; }
     padding: 0 12px 16px;
   }
 }
+
+
+.icon-button,
+.profile-button {
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  font: inherit;
+}
+
+.profile-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.profile-button:hover,
+.icon-button:hover {
+  background: #f1f3fa;
+}
+
+.navbar-dropdown {
+  position: absolute;
+  top: 64px;
+  right: 20px;
+  z-index: 1000;
+  min-width: 220px;
+  padding: 14px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(20, 30, 60, 0.12);
+}
+
+.navbar-dropdown button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.navbar-dropdown button:hover {
+  background: #f3f4f9;
+}
+
+
+
+
+.profile-settings-page {
+  padding: 28px;
+  max-width: 760px;
+}
+
+.profile-settings-page h2 {
+  margin-top: 0;
+  color: #172033;
+}
+
+.profile-settings-page form {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.profile-settings-page input:not([type="checkbox"]) {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dce2ed;
+  border-radius: 8px;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+.profile-settings-page button[type="submit"] {
+  padding: 12px 18px;
+  color: white;
+  background: #635bff;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid #e7eaf1;
+}
+
+.setting-row small {
+  display: block;
+  margin-top: 5px;
+  color: #7d879b;
+}
+
+
+
+.profile-settings-page {
+  padding: 28px;
+  max-width: 760px;
+}
+
+.profile-settings-page h2 {
+  margin-top: 0;
+  color: #172033;
+}
+
+.profile-settings-page form {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.profile-settings-page input:not([type="checkbox"]) {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dce2ed;
+  border-radius: 8px;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+.profile-settings-page button[type="submit"] {
+  padding: 12px 18px;
+  color: white;
+  background: #635bff;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid #e7eaf1;
+}
+
+.setting-row small {
+  display: block;
+  margin-top: 5px;
+  color: #7d879b;
+}
