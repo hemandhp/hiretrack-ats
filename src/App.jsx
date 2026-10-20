@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { supabase } from "./supabase";
 
+
 const STATUSES = [
   "Applied", "Screening", "Interview", "Offer", "Hired", "Rejected"
 ];
@@ -58,6 +59,50 @@ function App() {
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+
+
+
+const [profile, setProfile] = useState(() => {
+  try {
+    return JSON.parse(localStorage.getItem("hiretrack-profile")) || {
+      name: "Recruiter",
+      email: "",
+      role: "Administrator",
+    };
+  } catch {
+    return {
+      name: "Recruiter",
+      email: "",
+      role: "Administrator",
+    };
+  }
+});
+
+const [settings, setSettings] = useState(() => {
+  try {
+    return JSON.parse(localStorage.getItem("hiretrack-settings")) || {
+      darkMode: false,
+      notifications: true,
+    };
+  } catch {
+    return { darkMode: false, notifications: true };
+  }
+});
+
+const saveProfile = (updatedProfile) => {
+  setProfile(updatedProfile);
+  localStorage.setItem("hiretrack-profile", JSON.stringify(updatedProfile));
+};
+
+const saveSettings = (updatedSettings) => {
+  setSettings(updatedSettings);
+  localStorage.setItem("hiretrack-settings", JSON.stringify(updatedSettings));
+};
+
+
+
 
   const loadCandidates = useCallback(async () => {
     setLoading(true);
@@ -223,7 +268,7 @@ function App() {
   };
 
   return (
-    <div className="app">
+    <div className={`app ${settings.darkMode ? "dark-mode" : ""}`}>
       <div className="layout">
         <aside className="sidebar">
           <div className="brand">
@@ -285,10 +330,56 @@ function App() {
           <header className="topbar">
             <div className="breadcrumb">Workspace&nbsp; / &nbsp;<strong>Dashboard</strong></div>
             <div className="profile">
-              <Bell size={18} color="#8791a6" />
-              <div className="avatar">HT</div>
-              <div><strong>Recruiter</strong><div style={{ color: "#929bad", marginTop: 3 }}>Administrator</div></div>
-              <ChevronDown size={14} color="#929bad" />
+              
+{/* Notification button */}
+<button
+  type="button"
+  className="icon-button"
+  onClick={() => {
+    setShowNotifications(!showNotifications);
+    setShowProfileMenu(false);
+  }}
+  aria-label="Notifications"
+>
+  <Bell size={18} />
+</button>
+
+{showNotifications && (
+  <div className="navbar-dropdown">
+    <strong>Notifications</strong>
+    <p>No new notifications.</p>
+  </div>
+)}
+
+{/* Profile dropdown button */}
+<button
+  type="button"
+  className="profile-button"
+  onClick={() => {
+    setShowProfileMenu(!showProfileMenu);
+    setShowNotifications(false);
+  }}
+  aria-expanded={showProfileMenu}
+>
+  <span className="avatar">{(profile.name || "HT").trim().slice(0, 2).toUpperCase()}</span>
+  <span>
+    <div><strong>{profile.name || "Recruiter"}</strong><div style={{ color: "#929bad", marginTop: 3 }}>{profile.role}</div></div>
+  </span>
+  <ChevronDown size={16} />
+</button>
+
+{showProfileMenu && (
+  <div className="navbar-dropdown profile-dropdown">
+    <button type="button" onClick={() => {
+      setActivePage("My Profile");
+      setShowProfileMenu(false);
+    }}>My Profile</button>
+    <button type="button" onClick={() => {
+      setActivePage("Settings");
+      setShowProfileMenu(false);
+    }}>Settings</button>
+  </div>
+)}
             </div>
           </header>
 
@@ -301,6 +392,8 @@ function App() {
   {activePage === "Candidates" && "Candidate Management"}
   {activePage === "Hiring pipeline" && "Hiring Pipeline"}
   {activePage === "Interviews" && "Interview Candidates"}
+  {activePage === "My Profile" && "My Profile"}
+  {activePage === "Settings" && "Settings"}
 </h1>
 
 <p>
@@ -308,12 +401,16 @@ function App() {
   {activePage === "Candidates" && "Search, review, add, edit, and manage applicants."}
   {activePage === "Hiring pipeline" && "Monitor candidate distribution across all six hiring stages."}
   {activePage === "Interviews" && "Review candidates currently in the interview stage."}
+  {activePage === "My Profile" && "Manage your recruiter account information."}
+  {activePage === "Settings" && "Customize your HireTrack experience."}
 </p>
 
               </div>
-              <button className="btn btn-primary" onClick={openAddModal}>
-                <Plus size={16} /> Add candidate
-              </button>
+              {!["My Profile", "Settings"].includes(activePage) && (
+                <button className="btn btn-primary" onClick={openAddModal}>
+                  <Plus size={16} /> Add candidate
+                </button>
+              )}
             </div>
 
             {error && (
@@ -551,6 +648,47 @@ function App() {
                 </div>
               )}
             </section>
+            )}
+
+            {activePage === "My Profile" && (
+              <section className="table-card profile-settings-page" style={{ padding: 28, maxWidth: 760 }}>
+                <h2>My Profile</h2>
+                <p>Manage your recruiter account information.</p>
+                <form onSubmit={(event) => {
+                  event.preventDefault();
+                  saveProfile(profile);
+                  setNotice("Profile saved successfully.");
+                }} style={{ display: "grid", gap: 12, marginTop: 24 }}>
+                  <label htmlFor="profile-name">Full name</label>
+                  <input id="profile-name" className="control" value={profile.name}
+                    onChange={(event) => setProfile({ ...profile, name: event.target.value })} required />
+                  <label htmlFor="profile-email">Email address</label>
+                  <input id="profile-email" className="control" type="email" value={profile.email}
+                    onChange={(event) => setProfile({ ...profile, email: event.target.value })} />
+                  <label htmlFor="profile-role">Role</label>
+                  <input id="profile-role" className="control" value={profile.role} readOnly />
+                  <div><button className="btn btn-primary" type="submit">Save profile</button></div>
+                </form>
+              </section>
+            )}
+
+            {activePage === "Settings" && (
+              <section className="table-card profile-settings-page" style={{ padding: 28, maxWidth: 760 }}>
+                <h2>Settings</h2>
+                <p>Customize your HireTrack experience.</p>
+                <label style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20, padding: "20px 0", borderBottom: "1px solid #e7eaf1" }}>
+                  <span><strong>Dark mode</strong><small style={{ display: "block", marginTop: 5, color: "#7d879b" }}>Use a darker dashboard appearance.</small></span>
+                  <input type="checkbox" checked={settings.darkMode} onChange={(event) => {
+                    const updated = { ...settings, darkMode: event.target.checked };
+                    saveSettings(updated);
+                    document.querySelector(".app")?.classList.toggle("dark-mode", updated.darkMode);
+                  }} />
+                </label>
+                <label style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20, padding: "20px 0", borderBottom: "1px solid #e7eaf1" }}>
+                  <span><strong>Notifications</strong><small style={{ display: "block", marginTop: 5, color: "#7d879b" }}>Enable dashboard notification preferences.</small></span>
+                  <input type="checkbox" checked={settings.notifications} onChange={(event) => saveSettings({ ...settings, notifications: event.target.checked })} />
+                </label>
+              </section>
             )}
 
             <div className="footer-note">
